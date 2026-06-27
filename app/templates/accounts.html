@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Accounts — Ledger{% endblock %}
+{% block content %}
+
+<div class="ledger-total" style="padding-bottom: 24px;">
+  <div class="label">Manage</div>
+  <div class="figure" style="font-size: 28px;">Accounts</div>
+</div>
+
+<div class="form-card">
+  <div class="section-label" style="margin-bottom: 16px;">Add a new account</div>
+  <form method="post" action="/accounts/create" class="inline-form">
+    <div class="field-group" style="margin-bottom: 0;">
+      <label class="field-label">Name</label>
+      <input type="text" name="name" placeholder="e.g. Revolut" required>
+    </div>
+    <div class="field-group" style="margin-bottom: 0;">
+      <label class="field-label">Currency</label>
+      <select name="currency" required>
+        <option value="{{ base_currency }}" selected>{{ base_currency }}</option>
+        {% for code, label in currencies.items() %}
+          {% if code != base_currency %}<option value="{{ code }}">{{ code }}</option>{% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field-group" style="margin-bottom: 0;">
+      <label class="field-label">Type</label>
+      <select name="account_type" required>
+        {% for t in account_types %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+      </select>
+    </div>
+    <button type="submit">Add</button>
+  </form>
+</div>
+
+<div class="account-section-title">Active accounts</div>
+<div class="ledger-rows">
+  {% for acc in accounts if not acc.is_archived %}
+  <div class="ledger-row">
+    <div class="row-left">
+      <div class="row-name">{{ acc.name }}</div>
+      <div class="row-meta">{{ acc.currency }} · {{ acc.account_type }}</div>
+    </div>
+    <div class="row-actions">
+      <form method="post" action="/accounts/{{ acc.id }}/archive">
+        <button type="submit" class="btn-secondary">Archive</button>
+      </form>
+      <form method="post" action="/accounts/{{ acc.id }}/delete" onsubmit="return confirm('Delete this account and all its balance history? This cannot be undone.');">
+        <button type="submit" class="btn-danger">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <p style="color: var(--paper-dim); font-size: 14px;">No active accounts.</p>
+  {% endfor %}
+</div>
+
+{% set archived = accounts | selectattr('is_archived') | list %}
+{% if archived %}
+<div class="account-section-title">Archived</div>
+<div class="ledger-rows">
+  {% for acc in archived %}
+  <div class="ledger-row archived-row">
+    <div class="row-left">
+      <div class="row-name">{{ acc.name }}</div>
+      <div class="row-meta">{{ acc.currency }} · {{ acc.account_type }}</div>
+    </div>
+    <div class="row-actions">
+      <form method="post" action="/accounts/{{ acc.id }}/archive">
+        <button type="submit" class="btn-secondary">Restore</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="account-section-title">Exchange rate override</div>
+<p style="color: var(--paper-dim); font-size: 13px; margin-bottom: 16px;">
+  Rates are fetched automatically and cached per day. Use this only to correct a rate manually.
+</p>
+<form method="post" action="/fx/override" class="inline-form">
+  <div class="field-group" style="margin-bottom: 0;">
+    <label class="field-label">Currency</label>
+    <input type="text" name="currency" placeholder="e.g. USD" maxlength="3" required>
+  </div>
+  <div class="field-group" style="margin-bottom: 0;">
+    <label class="field-label">Date</label>
+    <input type="date" name="rate_date" required>
+  </div>
+  <div class="field-group" style="margin-bottom: 0;">
+    <label class="field-label">Rate to {{ base_currency }}</label>
+    <input type="number" step="0.0001" name="rate" placeholder="0.8800" required>
+  </div>
+  <button type="submit">Set rate</button>
+</form>
+
+{% endblock %}

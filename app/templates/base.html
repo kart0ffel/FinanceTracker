@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Ledger{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span class="mark">§</span> Ledger</div>
+    <nav class="tabs">
+      <a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Dashboard</a>
+      <a href="/entry" class="{% if request.url.path == '/entry' %}active{% endif %}">Add Entry</a>
+      <a href="/history" class="{% if request.url.path == '/history' %}active{% endif %}">History</a>
+      <a href="/accounts" class="{% if request.url.path == '/accounts' %}active{% endif %}">Accounts</a>
+    </nav>
+  </div>
+  <div class="shell">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}History — Ledger{% endblock %}
+{% block content %}
+
+<div class="ledger-total" style="padding-bottom: 24px;">
+  <div class="label">Record</div>
+  <div class="figure" style="font-size: 28px;">Entry History</div>
+</div>
+
+{% if not rows %}
+<div class="empty-state">
+  <div class="icon">§</div>
+  <p>No entries recorded yet.</p>
+  <a href="/entry" class="btn">Add your first entry</a>
+</div>
+{% else %}
+
+<table>
+  <thead>
+    <tr>
+      <th class="mono">Date</th>
+      <th>Account</th>
+      <th class="mono">Amount</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td class="mono">{{ r.balance.entry_date }}</td>
+      <td>{{ r.account.name if r.account else '—' }}</td>
+      <td class="mono">{{ r.balance.amount | fmt_amount }} {{ r.account.currency if r.account else '' }}</td>
+      <td>
+        <form method="post" action="/history/{{ r.balance.id }}/delete" onsubmit="return confirm('Delete this entry?');" style="display:inline;">
+          <button type="submit" class="btn-danger" style="padding: 6px 12px; font-size: 10px;">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+
+{% endblock %}

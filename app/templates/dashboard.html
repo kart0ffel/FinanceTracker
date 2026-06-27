@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Ledger{% endblock %}
+{% block content %}
+
+{% if request.query_params.get('saved') %}
+<div class="banner">Entry recorded.</div>
+{% endif %}
+
+{% if not has_accounts %}
+<div class="empty-state">
+  <div class="icon">§</div>
+  <p>No accounts yet. Add your first account to start tracking your net worth over time.</p>
+  <a href="/accounts" class="btn">Add an account</a>
+</div>
+{% else %}
+
+{% if fx_missing %}
+<div class="banner" style="background: rgba(181, 101, 74, 0.12); border-color: var(--rust); color: var(--rust);">
+  Exchange rate unavailable for: {{ fx_missing | join(', ') }}. These are excluded from the total below until a rate is fetched or set manually under Accounts.
+</div>
+{% endif %}
+
+<div class="ledger-total">
+  <div class="label">Net Worth, Total</div>
+  <div class="figure"><span id="total-figure">{{ total_base | fmt_amount }}</span><span class="ccy">{{ base_currency }}</span></div>
+  {% if delta is not none %}
+    <div class="delta {% if delta > 0 %}up{% elif delta < 0 %}down{% else %}flat{% endif %}">
+      {% if delta > 0 %}↑{% elif delta < 0 %}↓{% else %}→{% endif %}
+      {{ delta | fmt_amount }} {{ base_currency }} since last entry
+    </div>
+  {% endif %}
+</div>
+
+{% if history|length > 1 %}
+<div class="chart-section">
+  <div class="section-label">Net Worth Over Time</div>
+  <canvas id="netWorthChart" height="90"></canvas>
+</div>
+{% endif %}
+
+<div class="chart-section">
+  <div class="section-label">Accounts</div>
+  <div class="ledger-rows">
+    {% for row in account_rows %}
+    <div class="ledger-row" style="--row-color: {{ row.color }}">
+      <div class="row-left">
+        <div class="row-name">{{ row.account.name }}</div>
+        <div class="row-meta">{{ row.account.account_type }} · {{ row.balance.entry_date }}</div>
+      </div>
+      <div class="row-right">
+        <div class="row-amount">{{ row.balance.amount | fmt_amount }} {{ row.account.currency }}</div>
+        {% if row.account.currency != base_currency and row.converted is not none %}
+        <div class="row-converted">≈ {{ row.converted | fmt_amount }} {{ base_currency }}</div>
+        {% elif row.account.currency != base_currency %}
+        <div class="row-converted" style="color: var(--rust);">rate unavailable</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% if by_type_totals|length > 1 %}
+<div class="chart-section" style="border-bottom: none;">
+  <div class="section-label">Breakdown by Type</div>
+  <div class="breakdown">
+    {% for type, total in by_type_totals.items() %}
+    {% set pct = (total / total_base * 100) if total_base else 0 %}
+    <div class="bar-row">
+      <div class="bar-label">
+        <span>{{ type }}</span>
+        <span>{{ total | fmt_amount }} {{ base_currency }} · {{ "%.0f" | format(pct) }}%</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width: {{ pct }}%; background: {{ type_colors.get(type, '#9A9488') }}"></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endif %}
+
+{% endblock %}
+
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block scripts %}{% endblock %}
+
+{% if history|length > 1 %}
+<script>
+const ctx = document.getElementById('netWorthChart');
+const history = {{ history | tojson }};
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: history.map(h => h.date),
+    datasets: [{
+      label: 'Net worth',
+      data: history.map(h => h.total),
+      borderColor: '#C9A45C',
+      backgroundColor: 'rgba(201, 164, 92, 0.08)',
+      borderWidth: 2,
+      pointRadius: 3,
+      pointBackgroundColor: '#C9A45C',
+      tension: 0.25,
+      fill: true,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        grid: { color: '#2A323D' },
+        ticks: { color: '#A8A398', font: { family: 'JetBrains Mono', size: 10 } }
+      },
+      y: {
+        grid: { color: '#2A323D' },
+        ticks: { color: '#A8A398', font: { family: 'JetBrains Mono', size: 10 } }
+      }
+    }
+  }
+});
+</script>
+{% endif %}

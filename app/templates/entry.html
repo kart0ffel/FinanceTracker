@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Add Entry — Ledger{% endblock %}
+{% block content %}
+
+<div class="ledger-total" style="padding-bottom: 24px;">
+  <div class="label">New Entry</div>
+  <div class="figure" style="font-size: 28px;">Record balances</div>
+</div>
+
+{% if not accounts %}
+<div class="empty-state">
+  <div class="icon">§</div>
+  <p>No accounts yet. Add one first.</p>
+  <a href="/accounts" class="btn">Add an account</a>
+</div>
+{% else %}
+
+<form method="post" action="/entry" class="form-card">
+  <div class="field-group">
+    <label class="field-label">Entry date</label>
+    <input type="date" name="entry_date" value="{{ today }}" required>
+  </div>
+
+  <div class="account-section-title">Balances</div>
+
+  {% for acc in accounts %}
+  <div class="entry-row">
+    <div class="entry-account-label">
+      <span class="type-dot" style="background: {{ {'checking':'#7FA3C9','savings':'#7FA37F','investment':'#C9A45C','crypto':'#B58CC9','other':'#9A9488'}.get(acc.account_type, '#9A9488') }}"></span>
+      <div>
+        <div class="row-name">{{ acc.name }}</div>
+        <div class="entry-currency-tag">{{ acc.currency }} · {{ acc.account_type }}</div>
+      </div>
+    </div>
+    <input
+      type="number"
+      step="0.01"
+      name="amount_{{ acc.id }}"
+      placeholder="0.00"
+      value="{{ prefill.get(acc.id, '') }}"
+    >
+  </div>
+  {% endfor %}
+
+  <div class="btn-row">
+    <button type="submit">Save entry</button>
+    <a href="/" class="btn btn-secondary">Cancel</a>
+  </div>
+</form>
+
+{% endif %}
+
+{% endblock %}

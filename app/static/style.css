@@ -1,0 +1,372 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --ink: #10151C;
+  --ink-raised: #161D26;
+  --ink-line: #2A323D;
+  --paper: #EDEAE2;
+  --paper-dim: #A8A398;
+  --sage: #7FA37F;
+  --rust: #B5654A;
+  --brass: #C9A45C;
+  --type-checking: #7FA3C9;
+  --type-savings: #7FA37F;
+  --type-investment: #C9A45C;
+  --type-crypto: #B58CC9;
+  --type-other: #9A9488;
+
+  --serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', 'SF Mono', monospace;
+  --sans: 'Inter', -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.shell {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ---------- Nav ---------- */
+.topbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 32px 24px 24px;
+  max-width: 920px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--ink-line);
+}
+
+.brand {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.brand .mark {
+  color: var(--brass);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+nav.tabs {
+  display: flex;
+  gap: 28px;
+}
+
+nav.tabs a {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+nav.tabs a:hover { color: var(--paper); }
+nav.tabs a.active {
+  color: var(--brass);
+  border-bottom-color: var(--brass);
+}
+
+/* ---------- Ledger total (hero) ---------- */
+.ledger-total {
+  padding: 56px 0 40px;
+  border-bottom: 1px solid var(--ink-line);
+}
+
+.ledger-total .label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  margin-bottom: 10px;
+}
+
+.ledger-total .figure {
+  font-family: var(--serif);
+  font-size: 64px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ledger-total .figure .ccy {
+  font-size: 22px;
+  color: var(--paper-dim);
+  font-family: var(--mono);
+}
+
+.delta {
+  font-family: var(--mono);
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.delta.up { color: var(--sage); }
+.delta.down { color: var(--rust); }
+.delta.flat { color: var(--paper-dim); }
+
+/* ---------- Chart ---------- */
+.chart-section {
+  padding: 32px 0;
+  border-bottom: 1px solid var(--ink-line);
+}
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  margin-bottom: 16px;
+}
+
+/* ---------- Account ledger rows ---------- */
+.ledger-rows { padding: 8px 0; }
+
+.ledger-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0 16px 16px;
+  border-bottom: 1px solid var(--ink-line);
+  border-left: 3px solid var(--row-color, var(--brass));
+}
+
+.ledger-row:last-child { border-bottom: none; }
+
+.row-left { display: flex; flex-direction: column; gap: 3px; }
+
+.row-name { font-size: 15px; font-weight: 500; }
+
+.row-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--paper-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.row-right { text-align: right; display: flex; flex-direction: column; gap: 3px; }
+
+.row-amount { font-family: var(--mono); font-size: 16px; font-weight: 500; }
+
+.row-converted { font-family: var(--mono); font-size: 12px; color: var(--paper-dim); }
+
+/* ---------- Breakdown bars ---------- */
+.breakdown { display: flex; flex-direction: column; gap: 14px; padding: 24px 0; }
+
+.bar-row { display: flex; flex-direction: column; gap: 6px; }
+
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--paper-dim);
+}
+
+.bar-track {
+  height: 6px;
+  background: var(--ink-raised);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fill { height: 100%; border-radius: 3px; }
+
+/* ---------- Forms ---------- */
+.form-card {
+  background: var(--ink-raised);
+  border: 1px solid var(--ink-line);
+  border-radius: 10px;
+  padding: 28px;
+  margin-top: 24px;
+}
+
+.field-group { margin-bottom: 20px; }
+
+label.field-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  margin-bottom: 8px;
+}
+
+input, select {
+  width: 100%;
+  background: var(--ink);
+  border: 1px solid var(--ink-line);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 15px;
+  padding: 11px 14px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus, select:focus { border-color: var(--brass); }
+
+input[type="date"] { font-family: var(--mono); }
+
+.entry-row {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: 16px;
+  align-items: end;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--ink-line);
+}
+
+.entry-row:last-of-type { border-bottom: none; }
+
+.entry-account-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 11px;
+}
+
+.type-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+.entry-currency-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--paper-dim);
+}
+
+button, .btn {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--brass);
+  color: var(--ink);
+  border: none;
+  padding: 13px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+button:hover, .btn:hover { opacity: 0.9; }
+button:active, .btn:active { transform: scale(0.98); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--paper-dim);
+  border: 1px solid var(--ink-line);
+}
+
+.btn-secondary:hover { color: var(--paper); border-color: var(--paper-dim); }
+
+.btn-danger {
+  background: transparent;
+  color: var(--rust);
+  border: 1px solid var(--rust);
+}
+
+.btn-row { display: flex; gap: 12px; margin-top: 24px; }
+
+/* ---------- Tables ---------- */
+table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+
+th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ink-line);
+}
+
+td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--ink-line);
+  font-size: 14px;
+}
+
+td.mono, th.mono { font-family: var(--mono); }
+
+tr:hover td { background: var(--ink-raised); }
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  color: var(--paper-dim);
+}
+
+.empty-state .icon { font-size: 32px; margin-bottom: 16px; opacity: 0.5; }
+
+.empty-state p { font-size: 14px; line-height: 1.6; max-width: 360px; margin: 0 auto 24px; }
+
+/* ---------- Banner ---------- */
+.banner {
+  background: rgba(127, 163, 127, 0.12);
+  border: 1px solid var(--sage);
+  color: var(--sage);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 24px 0;
+}
+
+/* ---------- Add account inline form ---------- */
+.inline-form {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.account-section-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  margin: 32px 0 12px;
+}
+
+.archived-row { opacity: 0.45; }
+
+.row-actions { display: flex; gap: 8px; }
+.row-actions button { padding: 8px 14px; font-size: 11px; }
+
+@media (max-width: 600px) {
+  .ledger-total .figure { font-size: 42px; }
+  .inline-form { grid-template-columns: 1fr; }
+  nav.tabs { gap: 16px; }
+  .topbar { flex-direction: column; gap: 16px; align-items: flex-start; }
+}
